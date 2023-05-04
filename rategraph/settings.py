@@ -10,17 +10,30 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
+import os
+import dj_database_url
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 
+
+if os.path.isfile('env.py'):
+    import env
+
+if os.path.exists(os.path.join(BASE_DIR, 'env.py')):
+    import env
+    print("Env imported:", os.environ.get("DATABASE_URL"), os.environ.get("SECRET_KEY"))
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-9b__o)i!aiooes=!)s^qtm78nlzg^q50ddh8suaj!^h6$$b1l_'
+# SECRET_KEY = 'django-insecure-9b__o)i!aiooes=!)s^qtm78nlzg^q50ddh8suaj!^h6$$b1l_'
+
+
+SECRET_KEY = os.environ.get('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
@@ -74,11 +87,18 @@ WSGI_APPLICATION = 'rategraph.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': BASE_DIR / 'db.sqlite3',
+#     }
+# }
+
+print(os.environ.get("DATABASE_URL"))
+
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
-    }
+    'default': dj_database_url.parse(str(os.environ.get("DATABASE_URL")))
+
 }
 
 
